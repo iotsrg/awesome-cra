@@ -203,6 +203,60 @@ def build_report(
     }
 
 
+def build_sarif(report: Dict[str, Any]) -> Dict[str, Any]:
+    """SARIF 2.1.0 output for CI / GitHub code scanning ingestion."""
+    rule_id = "cra-annex-i-part-i-1"
+    results = []
+    for f in report["findings"]:
+        ids = ", ".join(f["vuln_ids"])
+        results.append(
+            {
+                "ruleId": rule_id,
+                "level": "error",
+                "message": {
+                    "text": (
+                        f"{f['component']}@{f['version']} has known vulnerabilities "
+                        f"({ids}) - violates CRA Annex I Part I (1)."
+                    )
+                },
+                "locations": [
+                    {
+                        "logicalLocations": [
+                            {"name": f["purl"] or f"{f['component']}@{f['version']}",
+                             "kind": "package"}
+                        ]
+                    }
+                ],
+                "properties": {"vulnerabilityIds": f["vuln_ids"], "purl": f["purl"]},
+            }
+        )
+    return {
+        "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+        "version": "2.1.0",
+        "runs": [
+            {
+                "tool": {
+                    "driver": {
+                        "name": "cra-sbom-gate",
+                        "informationUri": "https://osv.dev/",
+                        "rules": [
+                            {
+                                "id": rule_id,
+                                "name": "KnownExploitableVulnerability",
+                                "shortDescription": {
+                                    "text": "CRA Annex I Part I (1): no known exploitable vulnerabilities"
+                                },
+                                "helpUri": "https://eur-lex.europa.eu/eli/reg/2024/2847/oj",
+                            }
+                        ],
+                    }
+                },
+                "results": results,
+            }
+        ],
+    }
+
+
 def human_summary(report: Dict[str, Any]) -> str:
     lines = []
     lines.append("cra-sbom-gate - CRA Annex I Part I (1)")
@@ -233,6 +287,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     )
     ap.add_argument("sbom", help="Path to a CycloneDX or SPDX SBOM in JSON")
     ap.add_argument("--output", help="Write JSON report to this path")
+    ap.add_argument("--sarif", help="Write SARIF 2.1.0 report to this path (for CI / code scanning)")
     ap.add_argument("--verbose", action="store_true", help="Verbose progress on stderr")
     ap.add_argument("--enrich", action="store_true", help="Fetch vuln summaries from OSV (slower)")
     ap.add_argument("--offline", action="store_true", help="Parse and count only, no OSV queries")
@@ -273,6 +328,12 @@ def main(argv: Optional[List[str]] = None) -> int:
             json.dump(report, fh, indent=2)
         if args.verbose:
             eprint(f"[i] JSON report written to {args.output}")
+
+    if args.sarif:
+        with open(args.sarif, "w", encoding="utf-8") as fh:
+            json.dump(build_sarif(report), fh, indent=2)
+        if args.verbose:
+            eprint(f"[i] SARIF report written to {args.sarif}")
 
     print(human_summary(report))
 

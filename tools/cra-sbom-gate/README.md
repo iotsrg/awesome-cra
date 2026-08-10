@@ -56,6 +56,7 @@ python3 cra_sbom_gate.py sbom.json --enrich
 | Flag | Effect |
 |---|---|
 | `--output <path>` | Write the JSON report |
+| `--sarif <path>` | Write a SARIF 2.1.0 report (GitHub code scanning / CI) |
 | `--verbose` | Progress on stderr |
 | `--enrich` | Pull vuln summaries from OSV |
 | `--offline` | Parse and count only, no network |
