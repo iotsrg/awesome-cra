@@ -20,5 +20,6 @@ jobs:
       - name: Check links
         uses: lycheeverse/lychee-action@v2
         with:
-          args: --no-progress --accept 200..=299,429 --timeout 30 --max-retries 3 --retry-wait-time 3 './**/*.md'
+          # nvd.nist.gov blocks automated checkers (bot protection); exclude that host only.
+          args: --no-progress --accept 200..=299,429 --timeout 30 --max-retries 3 --retry-wait-time 3 --exclude 'nvd\.nist\.gov' './**/*.md'
           fail: true
