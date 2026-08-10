@@ -14,6 +14,8 @@ The CRA sets mandatory cybersecurity requirements for **products with digital el
 - [Standards](#standards)
 - [Scope and Classification](#scope-and-classification)
 - [Annex I Mapped to Engineering](#annex-i-mapped-to-engineering)
+- [Conformity Assessment Routes](#conformity-assessment-routes)
+- [Technical Documentation (Annex VII)](#technical-documentation-annex-vii)
 - [SBOM Tooling](#sbom-tooling)
 - [Vulnerability Data and Known-CVE Checking](#vulnerability-data-and-known-cve-checking)
 - [Coordinated Vulnerability Disclosure](#coordinated-vulnerability-disclosure)
@@ -21,6 +23,7 @@ The CRA sets mandatory cybersecurity requirements for **products with digital el
 - [Reporting Obligations](#reporting-obligations)
 - [Open Source and the CRA](#open-source-and-the-cra)
 - [Related Regulations](#related-regulations)
+- [Related Lists](#related-lists)
 - [Tools in this Repo](#tools-in-this-repo)
 - [Contributing](#contributing)
 
@@ -123,6 +126,7 @@ Retention: for at least **10 years** after the product is placed on the market, 
 - [CycloneDX](https://cyclonedx.org/) - SBOM standard with a strong security/VEX focus.
 - [SPDX](https://spdx.dev/) - ISO-standard SBOM format.
 - [Dependency-Track](https://dependencytrack.org/) - continuous SBOM analysis platform.
+- [BSI TR-03183-2](https://www.bsi.bund.de/EN/Themen/Unternehmen-und-Organisationen/Standards-und-Zertifizierung/Technische-Richtlinien/TR-nach-Thema-sortiert/tr03183/TR-03183_node.html) - German technical guideline defining concrete SBOM content requirements, widely used as the practical baseline for CRA SBOMs.
 - [cra-sbom-cli](https://github.com/cra-compliance-lab/cra-sbom-cli) - validates SBOM format/metadata completeness against CRA expectations and generates PDF reports. Complements [cra-sbom-gate](#tools-in-this-repo): quality validation vs. known-vulnerability gating.
 
 ## Vulnerability Data and Known-CVE Checking
@@ -154,17 +158,33 @@ Article 14 requires manufacturers to notify the relevant national CSIRT and ENIS
 
 The clock is the manufacturer's and starts on awareness - which a researcher's report can create.
 
+Reports go to the **ENISA Single Reporting Platform (SRP)** - one submission, routed simultaneously to the national CSIRT coordinator and ENISA. The 24-hour early warning only needs an indication of active exploitation and the affected Member States; technical detail follows in the 72-hour notification.
+
+**Voluntary reporting (relevant to researchers):** any person - not only manufacturers - may voluntarily notify a vulnerability, cyber threat, incident, or near miss. Voluntary reporting adds no new obligations to the notifier.
+
+- [ENISA Single Reporting Platform (SRP)](https://www.enisa.europa.eu/topics/product-security-and-certification/single-reporting-platform-srp) - official platform page.
+- [cyberresilienceact.eu - reporting](https://www.cyberresilienceact.eu/reporting.html) - independent explainer of the Article 14 reporting flow and timelines.
+
 ## Open Source and the CRA
 
 - Non-commercial open source developed outside a commercial activity is **out of scope**.
-- The CRA introduces the **open-source software steward** - a lighter-touch regime for foundations that systematically support FOSS used in commercial products.
-- Contributing a patch or hosting a repo does not make you a manufacturer; monetizing or commercializing does.
+- The CRA introduces the **open-source software steward** (Article 24) - a lighter-touch regime, with no administrative fines, for foundations that systematically support FOSS used in commercial products.
+- Contributing a patch or hosting a repo does not make you a manufacturer; monetizing or commercializing does. Commercial vendors remain fully responsible for the open-source components they ship.
+
+- [OpenSSF - Cyber Resilience Act resources](https://openssf.org/category/policy/cra/) - where the open-source community works through the steward role and CRA tooling in practice.
 
 ## Related Regulations
 
 - [NIS2 Directive (2022/2555)](https://eur-lex.europa.eu/eli/dir/2022/2555/oj) - covers operators of essential/important services; complements CRA which covers the products.
 - [RED Delegated Regulation 2022/30](https://eur-lex.europa.eu/eli/reg_del/2022/30/oj) - cybersecurity requirements for radio equipment; overlaps CRA for wireless devices.
 - [Cybersecurity Act (2019/881)](https://eur-lex.europa.eu/eli/reg/2019/881/oj) - provides the certification schemes CRA relies on for critical products.
+
+## Related Lists
+
+Other curated CRA collections. This list differs by taking a **product-security and offensive-security** angle (Annex I mapped to failure modes, evidence-producing tooling) rather than a compliance-officer angle.
+
+- [cra-compliance-lab/awesome-cra-compliance](https://github.com/cra-compliance-lab/awesome-cra-compliance) - broad compliance-focused resource list.
+- [zealience/Cyber-Resilience-Act](https://github.com/zealience/Cyber-Resilience-Act) - CRA reading list and Article 14 explainers with templates.
 
 ## Tools in this Repo
 
