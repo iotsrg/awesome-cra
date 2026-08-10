@@ -183,7 +183,7 @@ Reports go to the **ENISA Single Reporting Platform (SRP)** - one submission, ro
 
 Other curated CRA collections. This list differs by taking a **product-security and offensive-security** angle (Annex I mapped to failure modes, evidence-producing tooling) rather than a compliance-officer angle.
 
-- [cra-compliance-lab/awesome-cra-compliance](https://github.com/cra-compliance-lab/awesome-cra-compliance) - broad compliance-focused resource list.
+- [cra-compliance-lab/awesome-cra-compliance](https://github.com/cra-compliance-lab/awesome-cra-compliance) - the most comprehensive compliance-side reference: regulation, harmonised standards, EUCC, SBOM tooling, webinar decks, cluster projects. Start here for compliance.
 - [zealience/Cyber-Resilience-Act](https://github.com/zealience/Cyber-Resilience-Act) - CRA reading list and Article 14 explainers with templates.
 
 ## Tools in this Repo

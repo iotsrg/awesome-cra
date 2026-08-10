@@ -1,109 +1,43 @@
-# Roadmap - CRA Offensive Testing Project
+# Roadmap - CRA Offensive Testing
 
-Status: draft. Direction pending final go/no-go.
+Status: draft.
 
-## 1. Why this exists
+## Positioning
 
-An exhaustive compliance-side reference already exists ([awesome-cra-compliance](https://github.com/cra-compliance-lab/awesome-cra-compliance)). This project does not compete with it. It builds the **offensive counterpart** that repo cannot: how to actually **test a device against CRA essential requirements and prove the result** with reproducible evidence.
+Compliance-side references already exist (see [awesome-cra-compliance](https://github.com/cra-compliance-lab/awesome-cra-compliance)). This project is the offensive counterpart: **test a device against CRA Annex I and prove pass/fail with reproducible evidence.**
 
-One-line positioning:
+Rule: hypothesis, then deterministic proof. No verdict without evidence.
 
-> The offensive-security guide to CRA testing, plus the tooling that produces the evidence.
+## Deliverables
 
-## 2. Differentiator (what makes this not a duplicate)
+- **Playbook** - each Annex I requirement mapped to: attacker position -> test procedure -> tool/command -> pass/fail evidence.
+- **cra-reach** - firmware + SBOM -> is the CVE'd code reachable in the shipped binary. Turns "known CVE" into "known exploitable".
+- **Corpus** - deliberately-vulnerable firmware, each labelled with the requirement it breaks and the expected evidence.
 
-| Existing compliance list | This project |
+## Phases
+
+| Phase | Output |
 |---|---|
-| Points at standards, guidance, tools | Ships methodology + working tools |
-| Compliance/assessor seat | Attacker/researcher seat |
-| "Component has a known CVE" | "Vulnerable path is reachable and triggerable" |
-| Documents obligations | Proves pass/fail with captured evidence |
+| 0. Reset | Pivot confirmed, repo skeleton, list files repurposed |
+| 1. Playbook skeleton | Entry template + 3 worked entries (secure update, confidentiality, known-vuln) with captured evidence |
+| 2. cra-reach MVP | SBOM -> symbol presence -> reachability -> JSON/SARIF; downgrades one scanner false positive with proof |
+| 3. Corpus v1 | 3-5 labelled images + ground-truth file |
+| 4. Integration | Playbook cites corpus + cra-reach output; CI asserts expected verdicts |
+| 5. Extend | Remaining Annex I entries; BLE/GATT and JTAG/UART procedures |
 
-Every deliverable must survive the two-phase test: hypothesis, then deterministic reproducible proof. No checklist output without evidence.
+## Success criteria
 
-## 3. Scope
+- Any Annex I requirement has a procedure yielding reproducible pass/fail evidence.
+- cra-reach measurably cuts false positives vs a plain CVE scanner, proven on the corpus.
+- Zero duplicated value vs the compliance list.
 
-**In scope**
-- Annex I essential requirements, mapped to concrete offensive test procedures.
-- Firmware, embedded, IoT, BLE targets.
-- Evidence formats a manufacturer or CSIRT can reproduce (Art. 14 aligned).
+## Open decisions
 
-**Out of scope**
-- Legal/compliance advice, certification paperwork, notified-body process.
-- Weaponized exploitation (stop at proof-of-control per the RCE boundary).
-- Duplicating the existing compliance link list.
+1. Repo name (`cra-offensive`, `cra-red`, `cra-proving-ground`).
+2. cra-reach backend: `lief` (symbol-level, fast MVP) first, call-graph (`angr`/`radare2`) later.
+3. Keep or delete the awesome-list files.
+4. Corpus: build-from-source recipes vs checked-in minimal images.
 
-## 4. Workstreams
+## Non-goals
 
-### A. CRA Offensive Testing Playbook (methodology)
-For each Annex I requirement, one structured entry:
-`requirement -> attacker position -> test procedure -> tool/command -> evidence that constitutes pass/fail`.
-
-The core artifact. Cannot be "beaten on breadth" because it is procedure, not links.
-
-### B. cra-reach (tool)
-Firmware image + SBOM -> for each known-CVE component, determine whether the vulnerable symbol/function is present and reachable in the shipped binary. Output: `unreachable` vs `reachable candidate`. Turns "known CVE" into "known exploitable", which is what CRA legally means.
-
-### C. Ground-truth firmware corpus (benchmark)
-Small set of deliberately-vulnerable firmware images, each labelled with the CRA requirement it violates and the expected evidence. Validates scanners and doubles as a PoC library.
-
-## 5. Phases and milestones
-
-### Phase 0 - Reset and decide (week 1)
-- [ ] Confirm go/no-go on the pivot.
-- [ ] Retire or repurpose the awesome-list content (keep the useful CRA-context sections as Playbook front-matter).
-- [ ] Lock repo name and structure.
-- Deliverable: this ROADMAP accepted, repo skeleton for the new direction.
-
-### Phase 1 - Playbook skeleton (weeks 1-2)
-- [ ] Enumerate every Annex I Part I and Part II requirement as a row.
-- [ ] Define the entry template (requirement / attacker position / procedure / tooling / evidence / pass-fail).
-- [ ] Populate 3 fully-worked reference entries end to end:
-  - Secure update (unsigned/downgrade firmware flash).
-  - Confidentiality (cleartext transport or plaintext secret on flash).
-  - No known exploitable vulnerabilities (SBOM + reachability).
-- Deliverable: `playbook/` with template + 3 complete entries, each with captured evidence.
-
-### Phase 2 - cra-reach MVP (weeks 2-4)
-- [ ] Parse SBOM (reuse existing CycloneDX/SPDX parser).
-- [ ] Extract shipped binaries from a firmware root; resolve symbols/imports.
-- [ ] For each CVE component, map to affected symbol(s) where known; check presence.
-- [ ] Reachability pass from entry points (call graph, dead-code awareness). Start with a coarse "symbol present and imported" heuristic, then refine.
-- [ ] Output JSON + SARIF: `unreachable` vs `reachable-candidate`, with evidence.
-- Deliverable: `cra-reach` runnable on the corpus, downgrades at least one Grype false positive with proof.
-
-### Phase 3 - Corpus v1 (weeks 3-5, parallel with Phase 2)
-- [ ] 3-5 firmware images (or minimal rootfs), each with one labelled CRA violation.
-- [ ] Ground-truth file: requirement, location, expected evidence, expected tool verdict.
-- Deliverable: `corpus/` usable to validate cra-reach and Playbook procedures.
-
-### Phase 4 - Integration and hardening (weeks 5-6)
-- [ ] Playbook entries reference corpus images and cra-reach output as their worked evidence.
-- [ ] CI: run cra-reach against corpus, assert expected verdicts.
-- [ ] Contribution guide for adding new requirement entries and corpus samples.
-- Deliverable: coherent v0.1 - Playbook + tool + corpus that cross-reference.
-
-### Phase 5 - Extend coverage (ongoing)
-- [ ] Fill remaining Annex I entries.
-- [ ] Add BLE/GATT and hardware-debug (JTAG/UART) procedures.
-- [ ] Optional: contribute the firmware/offensive resources back to the compliance list.
-
-## 6. Success criteria
-
-- A researcher can pick any Annex I requirement and follow a procedure that yields reproducible pass/fail evidence.
-- cra-reach demonstrably reduces false positives versus a plain CVE scanner, with proof on the corpus.
-- Every Playbook entry has captured evidence, not description.
-- Zero duplicated value versus the existing compliance list.
-
-## 7. Open decisions
-
-- Repo name (e.g. `cra-offensive`, `cra-red`, `cra-proving-ground`).
-- Corpus hosting: build-from-source recipes vs checked-in minimal images (size, licensing).
-- cra-reach language: Python for parsing/orchestration; decide on the binary-analysis backend (angr, radare2/r2pipe, Ghidra headless, or lief for a lighter symbol-level first pass).
-- Whether to keep the existing awesome-list files or delete them.
-
-## 8. Non-goals
-
-- Not a compliance certification tool.
-- Not another link list.
-- Not a weaponization framework.
+Not compliance certification. Not another link list. Not weaponization (stop at proof-of-control).
