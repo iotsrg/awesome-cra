@@ -28,7 +28,8 @@ The CRA sets mandatory cybersecurity requirements for **products with digital el
 
 | Date | Milestone |
 |---|---|
-| 11 Dec 2024 | Regulation entered into force |
+| 10 Dec 2024 | Regulation entered into force |
+| 27 Jul 2026 | Commission published practical implementation guidance |
 | 11 Jun 2026 | Conformity assessment bodies notification provisions apply |
 | 11 Sep 2026 | Reporting obligations (Article 14) apply - actively exploited vulns and severe incidents |
 | 11 Dec 2027 | Full application - all essential requirements, CE marking, conformity assessment |
@@ -40,12 +41,19 @@ The CRA sets mandatory cybersecurity requirements for **products with digital el
 
 ## Official Guidance
 
+- [Commission practical implementation guidance](https://digital-strategy.ec.europa.eu/en/policies/cyber-resilience-act) - published 27 July 2026 to help manufacturers, developers, and businesses meet their CRA obligations.
+- [CRA Summary](https://digital-strategy.ec.europa.eu/en/policies/cra-summary) - official plain-language summary of scope and obligations.
 - [European Commission - CRA FAQ](https://digital-strategy.ec.europa.eu/en/faqs/cyber-resilience-act-faqs) - clarifications on scope, actors, and obligations.
 - [ENISA](https://www.enisa.europa.eu/) - EU agency operating the single reporting platform and issuing technical guidance.
 
 ## Standards
 
-- [CEN-CENELEC JTC 13](https://www.cencenelec.eu/areas-of-work/cen-cenelec-topics/cybersecurity-and-data-protection/) - drafting the harmonized standards mapped to CRA Annex I. Applying a harmonized standard gives a presumption of conformity.
+The Commission issued **Standardisation Request M/606**, accepted by CEN, CENELEC, and ETSI, covering **41 harmonised standards** targeted for delivery around Q3 2026. Applying a harmonised standard (once cited in the Official Journal) gives a presumption of conformity with the mapped Annex I requirements.
+
+**Status (as of mid-2026):** no CRA harmonised standard is yet ratified as an EN or cited in the Official Journal. Several EN 40000 drafts have passed public enquiry; the first citations are expected in the second half of 2026. Until then, conformity must be demonstrated against Annex I directly. Verify the current state before relying on any specific standard.
+
+- [CEN-CENELEC JTC 13](https://www.cencenelec.eu/areas-of-work/cen-cenelec-topics/cybersecurity-and-data-protection/) - the technical committee developing the horizontal **EN 40000 series** (WG9) mapped to CRA Annex I.
+- [Standardisation Request accepted (CEN-CENELEC news)](https://www.cencenelec.eu/news-events/news/2025/newsletter/ots-62-cra/) - announcement that CEN, CENELEC, and ETSI accepted M/606.
 - [ETSI EN 303 645](https://www.etsi.org/technologies/consumer-iot-security) - consumer IoT baseline security; widely used reference that aligns with several Annex I requirements.
 
 ## Scope and Classification
@@ -82,12 +90,40 @@ The essential requirements, translated into things you can test and produce evid
 | Public disclosure of fixed vulns | Security advisories once a patch ships |
 | Secure update distribution | Signed updates, integrity verification |
 
+## Conformity Assessment Routes
+
+Which route a manufacturer may use depends on the product tier (see [Scope and Classification](#scope-and-classification)). The modules come from the New Legislative Framework (Decision 768/2008/EC).
+
+| Module | Name | When usable |
+|---|---|---|
+| **A** | Internal control (self-assessment) | Default products, and Class I products **if** a harmonised standard is fully applied |
+| **B + C** | EU-type examination + conformity to type | Class I without a harmonised standard, and Class II; requires a notified body |
+| **H** | Full quality assurance | Alternative third-party route for Class I/II |
+| European cybersecurity certification | Under the Cybersecurity Act (e.g. EUCC) | Critical products (Annex IV), where mandated |
+
+Self-assessment is only available where explicitly permitted; higher tiers require a **notified body**.
+
+## Technical Documentation (Annex VII)
+
+The manufacturer must compile and keep a technical file. At minimum it contains:
+
+- General product description and intended purpose.
+- Design, development, and production information.
+- **Cybersecurity risk assessment** the product is designed against.
+- The list of harmonised standards or other specifications applied.
+- **SBOM** and information on the vulnerability handling process.
+- Test reports demonstrating conformity with Annex I.
+- The EU Declaration of Conformity.
+
+Retention: for at least **10 years** after the product is placed on the market, or the support period, whichever is longer.
+
 ## SBOM Tooling
 
 - [Syft](https://github.com/anchore/syft) - generate SBOMs (CycloneDX, SPDX) from images, filesystems, and firmware roots.
 - [CycloneDX](https://cyclonedx.org/) - SBOM standard with a strong security/VEX focus.
 - [SPDX](https://spdx.dev/) - ISO-standard SBOM format.
 - [Dependency-Track](https://dependencytrack.org/) - continuous SBOM analysis platform.
+- [cra-sbom-cli](https://github.com/cra-compliance-lab/cra-sbom-cli) - validates SBOM format/metadata completeness against CRA expectations and generates PDF reports. Complements [cra-sbom-gate](#tools-in-this-repo): quality validation vs. known-vulnerability gating.
 
 ## Vulnerability Data and Known-CVE Checking
 
@@ -132,7 +168,7 @@ The clock is the manufacturer's and starts on awareness - which a researcher's r
 
 ## Tools in this Repo
 
-- [**cra-sbom-gate**](tools/cra-sbom-gate) - takes a CycloneDX or SPDX SBOM, cross-checks every component against the OSV database, and flags known-vulnerable components as a violation of **Annex I Part I (1)** ("no known exploitable vulnerabilities at the time of placing on the market"). Deterministic, reproducible, evidence-producing.
+- [**cra-sbom-gate**](tools/cra-sbom-gate) - a **known-vulnerability gate**, not a format validator. Takes a CycloneDX or SPDX SBOM, cross-checks every component against the OSV database, and flags known-vulnerable components as a violation of **Annex I Part I (1)** ("no known exploitable vulnerabilities at the time of placing on the market"). Deterministic, reproducible, evidence-producing. Pairs with format validators like [cra-sbom-cli](https://github.com/cra-compliance-lab/cra-sbom-cli), which check SBOM completeness rather than component vulnerabilities.
 
 ## Contributing
 

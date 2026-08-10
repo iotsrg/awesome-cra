@@ -30,6 +30,15 @@ Run the gate:
 python3 cra_sbom_gate.py sbom.json --verbose
 ```
 
+Two examples ship with the tool:
+
+- `examples/sample-cyclonedx.json` - minimal, one `pkg:pypi` component with known vulns.
+- `examples/sample-firmware-cyclonedx.json` - realistic router firmware with `pkg:deb` distro purls (curl, openssl, zlib) that resolve to real Debian advisories:
+
+```bash
+python3 cra_sbom_gate.py examples/sample-firmware-cyclonedx.json --fail-on-vuln
+```
+
 Write a machine-readable report and fail CI on any hit:
 
 ```bash
