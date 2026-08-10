@@ -1,0 +1,127 @@
+{
+  "schema": "cra-annex1-catalog/v1",
+  "source": "Regulation (EU) 2024/2847, Annex I",
+  "note": "Machine-readable map of CRA Annex I requirements to automated checks, offensive test procedures, and pass/fail evidence. automated_check is null when the requirement cannot be verified from a firmware image alone (manual procedure only).",
+  "requirements": [
+    {
+      "id": "annex1-p1-known-vuln",
+      "ref": "Annex I Part I (1)",
+      "title": "No known exploitable vulnerabilities at ship time",
+      "cwe": ["CWE-1104", "CWE-1035"],
+      "attacker_test": {
+        "position": "local-app-sandbox",
+        "procedure": "Generate an SBOM of the shipped image (syft) and cross-check every component against OSV.",
+        "evidence": "Component name+version with matching CVE/advisory IDs.",
+        "pass": "No component resolves to a known vulnerability.",
+        "fail": "At least one shipped component has a known vulnerability."
+      },
+      "automated_check": "known-vuln",
+      "references": ["https://osv.dev/", "https://github.com/anchore/syft"]
+    },
+    {
+      "id": "annex1-p1-exploit-mitigation",
+      "ref": "Annex I Part I (2)(k)",
+      "title": "Exploit mitigation on shipped binaries",
+      "cwe": ["CWE-1327"],
+      "attacker_test": {
+        "position": "local-app-sandbox",
+        "procedure": "Parse every ELF in the rootfs for NX, PIE, stack canary, and RELRO.",
+        "evidence": "Per-binary table of missing mitigations.",
+        "pass": "Executables ship with NX, PIE, canary, and RELRO enabled.",
+        "fail": "Executables ship without standard exploit mitigations."
+      },
+      "automated_check": "elf-hardening",
+      "references": ["https://www.trapkit.de/tools/checksec/"]
+    },
+    {
+      "id": "annex1-p1-confidentiality-secrets",
+      "ref": "Annex I Part I (2)(e)",
+      "title": "Confidentiality: no plaintext secrets on the image",
+      "cwe": ["CWE-798", "CWE-312"],
+      "attacker_test": {
+        "position": "local-app-sandbox",
+        "procedure": "Scan the rootfs for private keys, hardcoded credentials, and known secret formats.",
+        "evidence": "File path + matched secret type (PEM private key, API token, password entry).",
+        "pass": "No embedded private keys or hardcoded credentials.",
+        "fail": "Private key or hardcoded credential present in the image."
+      },
+      "automated_check": "secrets",
+      "references": ["https://cwe.mitre.org/data/definitions/798.html"]
+    },
+    {
+      "id": "annex1-p1-secure-default-accounts",
+      "ref": "Annex I Part I (2)(b)",
+      "title": "Secure by default: no empty or default password accounts",
+      "cwe": ["CWE-1392", "CWE-258"],
+      "attacker_test": {
+        "position": "same-LAN",
+        "procedure": "Inspect /etc/passwd and /etc/shadow for empty password hashes or known default hashes.",
+        "evidence": "Account name with empty/weak password field.",
+        "pass": "No login account ships with an empty or default password.",
+        "fail": "An account ships with an empty or default password."
+      },
+      "automated_check": "default-accounts",
+      "references": ["https://cwe.mitre.org/data/definitions/1392.html"]
+    },
+    {
+      "id": "annex1-p1-attack-surface-services",
+      "ref": "Annex I Part I (2)(j)",
+      "title": "Minimize attack surface: no insecure network services enabled by default",
+      "cwe": ["CWE-1327", "CWE-319"],
+      "attacker_test": {
+        "position": "same-LAN",
+        "procedure": "Detect telnet/ftp/rsh daemons and their default-enabled autostart entries.",
+        "evidence": "Service binary + init/autostart reference enabling it.",
+        "pass": "No cleartext remote-admin service enabled by default.",
+        "fail": "telnetd/ftpd/rshd or equivalent enabled by default."
+      },
+      "automated_check": "insecure-services",
+      "references": ["https://cwe.mitre.org/data/definitions/319.html"]
+    },
+    {
+      "id": "annex1-p1-secure-update",
+      "ref": "Annex I Part I (2)(c)",
+      "title": "Secure update mechanism: signed firmware updates",
+      "cwe": ["CWE-347"],
+      "attacker_test": {
+        "position": "local-app-sandbox / physical-debug-port",
+        "procedure": "Flash an unsigned and a downgraded firmware image and observe whether the device accepts it.",
+        "evidence": "Device boot log accepting an unsigned/downgraded image.",
+        "pass": "Device rejects unsigned or downgraded images.",
+        "fail": "Device accepts an unsigned or downgraded image."
+      },
+      "automated_check": null,
+      "references": ["https://cwe.mitre.org/data/definitions/347.html", "https://www.mcuboot.com/"]
+    },
+    {
+      "id": "annex1-p2-sbom",
+      "ref": "Annex I Part II (1)",
+      "title": "Vulnerability handling: maintain an SBOM",
+      "cwe": [],
+      "attacker_test": {
+        "position": "local-app-sandbox",
+        "procedure": "Confirm a machine-readable SBOM (CycloneDX or SPDX) is provided and covers top-level components.",
+        "evidence": "Presence and format of the SBOM artifact.",
+        "pass": "Machine-readable SBOM present covering shipped components.",
+        "fail": "No SBOM, or not machine-readable."
+      },
+      "automated_check": "sbom-present",
+      "references": ["https://cyclonedx.org/", "https://spdx.dev/"]
+    },
+    {
+      "id": "annex1-p2-cvd",
+      "ref": "Annex I Part II (5)",
+      "title": "Vulnerability handling: coordinated disclosure contact",
+      "cwe": [],
+      "attacker_test": {
+        "position": "remote-internet",
+        "procedure": "Check for a published security contact (security.txt / CVD policy).",
+        "evidence": "Reachable security contact or its absence.",
+        "pass": "A reporting contact and CVD policy are published.",
+        "fail": "No reporting contact is published."
+      },
+      "automated_check": null,
+      "references": ["https://securitytxt.org/"]
+    }
+  ]
+}

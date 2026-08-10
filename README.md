@@ -188,6 +188,7 @@ Other curated CRA collections. This list differs by taking a **product-security 
 
 ## Tools in this Repo
 
+- [**cra-check**](tools/cra-check) - tests an extracted firmware root filesystem against **CRA Annex I** requirements, driven by a machine-readable catalog ([annex1.json](tools/cra-check/catalog/annex1.json)) that maps each requirement to an automated check, an offensive test procedure, and pass/fail evidence. Includes a stdlib `checksec` (NX/PIE/canary/RELRO), secrets, default-account, and insecure-service checks. Offline, deterministic, CI-gateable. This is the project's core artifact.
 - [**cra-sbom-gate**](tools/cra-sbom-gate) - a **known-vulnerability gate**, not a format validator. Takes a CycloneDX or SPDX SBOM, cross-checks every component against the OSV database, and flags known-vulnerable components as a violation of **Annex I Part I (1)** ("no known exploitable vulnerabilities at the time of placing on the market"). Deterministic, reproducible, evidence-producing. Pairs with format validators like [cra-sbom-cli](https://github.com/cra-compliance-lab/cra-sbom-cli), which check SBOM completeness rather than component vulnerabilities.
 
 ## Contributing
