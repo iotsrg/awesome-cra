@@ -162,6 +162,7 @@ Reports go to the **ENISA Single Reporting Platform (SRP)** - one submission, ro
 
 **Voluntary reporting (relevant to researchers):** any person - not only manufacturers - may voluntarily notify a vulnerability, cyber threat, incident, or near miss. Voluntary reporting adds no new obligations to the notifier.
 
+- [CRA Article 14: 24-hour, 72-hour and 14-day deadlines](https://devkit.dev/guides/cra-article-14-reporting-timeline) - the Article 14 deadlines for actively exploited vulnerabilities and severe incidents, quoting Article 14(2), Article 3(42) and Article 69(3), with the records to keep.
 - [ENISA Single Reporting Platform (SRP)](https://www.enisa.europa.eu/topics/product-security-and-certification/single-reporting-platform-srp) - official platform page.
 - [cyberresilienceact.eu - reporting](https://www.cyberresilienceact.eu/reporting.html) - independent explainer of the Article 14 reporting flow and timelines.
 
